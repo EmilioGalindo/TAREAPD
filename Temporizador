@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporizador Pomodoro</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #timer { font-size: 2em; margin: 20px 0; }
+        button { margin: 5px; padding: 10px; font-size: 1em; }
+    </style>
+</head>
+<body>
+
+    <h1>Temporizador Pomodoro</h1>
+    <div id="timer">25:00</div>
+    <button onclick="startTimer()">Iniciar</button>
+    <button onclick="stopTimer()">Detener</button>
+    <button onclick="resetTimer()">Reiniciar</button>
+    <audio id="alarm" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+
+    <script>
+        let timeLeft = 25 * 60;
+        let timer;
+        let workTime = true;
+
+        function startTimer() {
+            if (!timer) {
+                timer = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        document.getElementById('alarm').play();
+                        clearInterval(timer);
+                        timer = null;
+                        timeLeft = workTime ? 10 * 60 : 25 * 60;
+                        workTime = !workTime;
+                        startTimer();
+                    }
+                }, 1000);
+            }
+        }
+
+        function stopTimer() {
+            clearInterval(timer);
+            timer = null;
+        }
+
+        function resetTimer() {
+            stopTimer();
+            timeLeft = 25 * 60;
+            workTime = true;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            document.getElementById('timer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+    </script>
+
+</body>
+</html>
